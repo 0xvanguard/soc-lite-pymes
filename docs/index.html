@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Lite PYMES - Centro de Seguridad para Pequeñas Empresas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0a1a; color: #fff; }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(0, 170, 255, 0.05) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        
+        .hero-content { position: relative; z-index: 1; max-width: 900px; }
+        .logo { font-size: 5rem; margin-bottom: 1rem; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; background: linear-gradient(90deg, #00ff88, #00aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero .subtitle { font-size: 1.4rem; color: #888; margin-bottom: 2rem; line-height: 1.6; }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #00ff88;
+            border-radius: 50px;
+            color: #00ff88;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            animation: glow 2s ease-in-out infinite;
+        }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3); } 50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); } }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        .btn-primary { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4); }
+        .btn-secondary { border: 2px solid #00aaff; color: #00aaff; }
+        .btn-secondary:hover { background: #00aaff; color: #000; }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            margin: 4rem auto;
+            max-width: 1000px;
+            background: #111;
+            border-radius: 16px;
+            border: 1px solid #222;
+            overflow: hidden;
+        }
+        .dashboard-header {
+            background: #1a1a2e;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid #222;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27ca40; }
+        .dashboard-body { padding: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .stat-card {
+            background: #1a1a2e;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #222;
+            text-align: center;
+        }
+        .stat-card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; color: #00ff88; }
+        .stat-card .label { color: #888; font-size: 0.9rem; }
+        .stat-card.danger .value { color: #ff5f56; }
+        .stat-card.warning .value { color: #ffbd2e; }
+
+        /* Features */
+        .features {
+            max-width: 1100px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+        }
+        .features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #00ff88; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .feature-card {
+            background: #111;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #222;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-5px); border-color: #00ff88; }
+        .feature-card .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; color: #fff; }
+        .feature-card p { color: #888; line-height: 1.6; }
+
+        /* How it works */
+        .how-it-works {
+            max-width: 1000px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .how-it-works h2 { font-size: 2.5rem; margin-bottom: 3rem; color: #00aaff; }
+        .steps { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; }
+        .step {
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+        }
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00aaff);
+            color: #000;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        .step h3 { margin-bottom: 0.5rem; }
+        .step p { color: #888; font-size: 0.95rem; }
+
+        /* Threats */
+        .threats {
+            max-width: 1000px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+        }
+        .threats h2 { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #ff5f56; }
+        .threats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .threat-item {
+            background: #1a0a0a;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #ff5f56;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .threat-item .icon { font-size: 2rem; }
+        .threat-item h4 { color: #ff5f56; }
+        .threat-item p { color: #888; font-size: 0.85rem; }
+
+        /* Pricing */
+        .pricing {
+            max-width: 1100px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .pricing h2 { font-size: 2.5rem; margin-bottom: 3rem; color: #fff; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .pricing-card {
+            background: #111;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid #222;
+            transition: transform 0.3s;
+        }
+        .pricing-card:hover { transform: translateY(-5px); }
+        .pricing-card.featured { border-color: #00ff88; position: relative; }
+        .pricing-card.featured::before {
+            content: 'MÁS POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00ff88;
+            color: #000;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .pricing-card h3 { font-size: 1.4rem; margin-bottom: 1rem; }
+        .price { font-size: 3rem; font-weight: bold; color: #00ff88; }
+        .price span { font-size: 1rem; color: #888; }
+        .pricing-card ul { list-style: none; margin: 1.5rem 0; text-align: left; }
+        .pricing-card li { padding: 0.5rem 0; color: #aaa; }
+        .pricing-card li::before { content: '✓ '; color: #00ff88; }
+
+        /* Testimonials */
+        .testimonials {
+            max-width: 1000px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .testimonials h2 { font-size: 2.5rem; margin-bottom: 3rem; color: #00aaff; }
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .testimonial {
+            background: #111;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #222;
+        }
+        .testimonial .quote { color: #aaa; font-style: italic; line-height: 1.6; margin-bottom: 1rem; }
+        .testimonial .author { color: #00ff88; font-weight: bold; }
+        .testimonial .role { color: #888; font-size: 0.85rem; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid #222;
+            color: #666;
+        }
+        footer a { color: #00ff88; text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .dashboard-body { grid-template-columns: 1fr; }
+            .steps { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">🏢 Diseñado para PYMES Latinoamericanas</div>
+            <div class="logo">🛡️</div>
+            <h1>SOC Lite PYMES</h1>
+            <p class="subtitle">
+                Tu Centro de Operaciones de Seguridad personalizado.<br>
+                Monitoreo 24/7, detección de amenazas y respuesta automática.<br>
+                <strong>Sin equipo de seguridad dedicado. Sin costos millonarios.</strong>
+            </p>
+            <a href="#pricing" class="btn btn-primary">Comenzar Ahora</a>
+            <a href="#features" class="btn btn-secondary">Ver Características</a>
+        </div>
+    </section>
+
+    <div class="dashboard-preview">
+        <div class="dashboard-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <span style="color: #888; margin-left: 1rem;">SOC Lite Dashboard - panel.solclase.com</span>
+        </div>
+        <div class="dashboard-body">
+            <div class="stat-card">
+                <div class="icon">🔍</div>
+                <div class="value">2,847</div>
+                <div class="label">Eventos analizados hoy</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="icon">🚨</div>
+                <div class="value">3</div>
+                <div class="label">Amenazas bloqueadas</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="icon">⚠️</div>
+                <div class="value">12</div>
+                <div class="label">Alertas pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔥</div>
+                <div class="value">99.8%</div>
+                <div class="label">Uptime del sistema</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⏱️</div>
+                <div class="value">< 5min</div>
+                <div class="label">Tiempo de respuesta</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📊</div>
+                <div class="value">A+</div>
+                <div class="label">Score de seguridad</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="features" id="features">
+        <h2>🛡️ Protección Completa para tu Negocio</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">📡</div>
+                <h3>Monitoreo 24/7</h3>
+                <p>Vigilancia constante de tus sistemas, redes y aplicaciones. Detección automática de anomalías y comportamientos sospechosos sin necesidad de personal dedicado.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🤖</div>
+                <h3>AI de Detección</h3>
+                <p>Inteligencia artificial que aprende de tu entorno y detecta amenazas que los sistemas tradicionales no ven. Reducción del 85% en falsos positivos.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🚨</div>
+                <h3>Alertas Inteligentes</h3>
+                <p>Notificaciones priorizadas por nivel de riesgo. No más alertas de spam. Solo lo que realmente importa, en tu idioma, en tiempo real.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📋</div>
+                <h3>Reportes Automáticos</h3>
+                <p>Reportes ejecutivos semanales y mensuales en español. Cumplimiento de normativas LATAM incluido. Listos para auditorías.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔗</div>
+                <h3>Integración Fácil</h3>
+                <p>Conecta en minutos con AWS, Azure, Google Cloud, servidores locales, y las herramientas que ya usas. Sin cambios de infraestructura.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">💰</div>
+                <h3>Precio para PYMES</h3>
+                <p>SOC tradicional cuesta $50,000+/mes. SOC Lite desde $49/mes. Misma protección, fracción del costo. Sin contratar un equipo completo.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="threats">
+        <h2>🔴 Amenazas que Detectamos</h2>
+        <div class="threats-grid">
+            <div class="threat-item">
+                <div class="icon">🦠</div>
+                <div>
+                    <h4>Ransomware</h4>
+                    <p>Detección y bloqueo antes de que encripte tus datos</p>
+                </div>
+            </div>
+            <div class="threat-item">
+                <div class="icon">🎣</div>
+                <div>
+                    <h4>Phishing</h4>
+                    <p>Identificación de emails y páginas fraudulentas</p>
+                </div>
+            </div>
+            <div class="threat-item">
+                <div class="icon">🔓</div>
+                <div>
+                    <h4>Acceso No Autorizado</h4>
+                    <p>Alertas de intentos de acceso sospechosos</p>
+                </div>
+            </div>
+            <div class="threat-item">
+                <div class="icon">📤</div>
+                <div>
+                    <h4>Filtración de Datos</h4>
+                    <p>Monitoreo de exfiltración de información sensible</p>
+                </div>
+            </div>
+            <div class="threat-item">
+                <div class="icon">🌐</div>
+                <div>
+                    <h4>Ataques DDoS</h4>
+                    <p>Detección y mitigación de ataques de denegación</p>
+                </div>
+            </div>
+            <div class="threat-item">
+                <div class="icon">💉</div>
+                <div>
+                    <h4>Inyección SQL / XSS</h4>
+                    <p>Protección de aplicaciones web contra inyecciones</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <h2>⚡ Cómo Funciona</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Conecta</h3>
+                <p>Integra tus sistemas en 5 minutos. Soporta AWS, Azure, servidores locales y más.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Configura</h3>
+                <p>La IA aprende tu entorno automáticamente. Sin configuración compleja.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Protege</h3>
+                <p>Monitoreo 24/7 activo. Detección y respuesta automática de amenazas.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Reporta</h3>
+                <p>Reportes ejecutivos en español. Cumplimiento normativo incluido.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <h2>💎 Planes para Cada Negocio</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>🟢 Starter</h3>
+                <div class="price">$49<span>/mes</span></div>
+                <ul>
+                    <li>1 servidor o sitio web</li>
+                    <li>Monitoreo básico 24/7</li>
+                    <li>Alertas por email</li>
+                    <li>Reporte mensual</li>
+                    <li>5 GB de logs/mes</li>
+                </ul>
+                <a href="#" class="btn btn-secondary">Empezar</a>
+            </div>
+            <div class="pricing-card featured">
+                <h3>🔵 Profesional</h3>
+                <div class="price">$149<span>/mes</span></div>
+                <ul>
+                    <li>5 servidores o sitios web</li>
+                    <li>Monitoreo avanzado con AI</li>
+                    <li>Alertas en tiempo real</li>
+                    <li>Reportes semanales + mensual</li>
+                    <li>50 GB de logs/mes</li>
+                    <li>Integración con SIEM</li>
+                    <li>Respuesta automática</li>
+                </ul>
+                <a href="#" class="btn btn-primary">Empezar</a>
+            </div>
+            <div class="pricing-card">
+                <h3>🔴 Enterprise</h3>
+                <div class="price">$399<span>/mes</span></div>
+                <ul>
+                    <li>Servidores ilimitados</li>
+                    <li>AI avanzado + ML</li>
+                    <li>Alertas omnicanal</li>
+                    <li>Reportes personalizados</li>
+                    <li>Logs ilimitados</li>
+                    <li>API completa</li>
+                    <li>Soporte prioritario 24/7</li>
+                    <li>Cumplimiento normativo LATAM</li>
+                </ul>
+                <a href="#" class="btn btn-secondary">Contactar</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <h2>💬 Lo que Dicen Nuestros Clientes</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial">
+                <p class="quote">"Antes gastábamos $3,000/mes en consultoría de seguridad. Con SOC Lite pagamos $149 y tenemos protección 24/7. Increíble."</p>
+                <p class="author">María Fernández</p>
+                <p class="role">CEO, TechStore MX</p>
+            </div>
+            <div class="testimonial">
+                <p class="quote">"Detectaron un intento de ransomware antes de que pudiera hacer daño. El ROI se pagó el primer día."</p>
+                <p class="author">Carlos Mendoza</p>
+                <p class="role">CTO, Logística Express CO</p>
+            </div>
+            <div class="testimonial">
+                <p class="quote">"Por fin una herramienta de seguridad en español y a precio de PYME. Esto era lo que faltaba en LATAM."</p>
+                <p class="author">Ana Rodríguez</p>
+                <p class="role">Directora IT, Banco Regional AR</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 SOC Lite PYMES - Protegiendo a las pequeñas empresas de Latinoamérica</p>
+        <p style="margin-top: 0.5rem;">
+            <a href="#">Documentación</a> · 
+            <a href="#">API</a> · 
+            <a href="#">Blog</a> · 
+            <a href="#">Contacto</a>
+        </p>
+    </footer>
+</body>
+</html>
